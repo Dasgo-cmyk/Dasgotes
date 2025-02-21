@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Futuristic Login</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        body {
+            background: black;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Background Animasi */
+        body::before {
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(0, 255, 255, 0.3) 10%, black 80%);
+            animation: backgroundMove 10s infinite alternate ease-in-out;
+            z-index: -2;
+        }
+
+        @keyframes backgroundMove {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.2); }
+        }
+
+        /* Kotak Login */
+        .login-container {
+            background: rgba(0, 0, 0, 0.85);
+            padding: 40px;
+            width: 350px;
+            border-radius: 15px;
+            box-shadow: 0 0 20px cyan, 0 0 40px magenta;
+            text-align: center;
+            position: relative;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .login-container:hover {
+            transform: scale(1.05);
+        }
+
+        h2 {
+            color: cyan;
+            font-size: 28px;
+            margin-bottom: 15px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 2px solid cyan;
+            border-radius: 8px;
+            background: black;
+            color: cyan;
+            font-size: 16px;
+            text-align: center;
+            box-shadow: 0 0 10px cyan;
+            transition: box-shadow 0.3s ease-in-out, transform 0.2s;
+        }
+
+        input:focus {
+            box-shadow: 0 0 20px magenta;
+            transform: scale(1.02);
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(90deg, cyan, blue, magenta);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.3s, background 0.5s ease-in-out;
+            box-shadow: 0 0 20px cyan;
+            animation: buttonGlow 2s infinite alternate ease-in-out;
+        }
+
+        @keyframes buttonGlow {
+            0% { box-shadow: 0 0 15px cyan; }
+            100% { box-shadow: 0 0 30px magenta; }
+        }
+
+        button:hover {
+            transform: scale(1.1);
+        }
+
+        p {
+            margin-top: 10px;
+        }
+
+        a {
+            color: #00ffea;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s;
+        }
+
+        a:hover {
+            color: white;
+            text-shadow: 0 0 10px cyan;
+        }
+
+        /* Efek Partikel */
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="particleCanvas"></canvas>
+    <div class="login-container">
+        <h2>Futuristic Login</h2>
+        <form id="loginForm">
+            <input type="text" id="username" placeholder="Username" required>
+            <input type="password" id="password" placeholder="Password" required>
+            <button type="submit">Sign in</button>
+        </form>
+        <p><a href="#">Made by</a> | <a href="#">Dasgo</a></p>
+    </div>
+
+    <script>
+        document.getElementById("loginForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            let username = document.getElementById("username").value;
+            let password = document.getElementById("password").value;
+
+            if (username === "admin" && password === "123") {
+                alert("🚀 Login Berhasil!");
+            } else {
+                alert("❌ Username atau password salah!");
+            }
+        });
+
+        // Efek Partikel Neon Interaktif
+        const canvas = document.getElementById("particleCanvas");
+        const ctx = canvas.getContext("2d");
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const particles = [];
+        class Particle {
+            constructor(x, y, size, speedX, speedY) {
+                this.x = x;
+                this.y = y;
+                this.size = size;
+                this.speedX = speedX;
+                this.speedY = speedY;
+                this.color = `hsl(${Math.random() * 360}, 100%, 50%)`;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if (this.size > 0.2) this.size -= 0.1;
+            }
+            draw() {
+                ctx.fillStyle = this.color;
+                ctx.shadowBlur = 15;
+                ctx.shadowColor = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function createParticles(event) {
+            for (let i = 0; i < 5; i++) {
+                const size = Math.random() * 5 + 2;
+                const speedX = (Math.random() - 0.5) * 4;
+                const speedY = (Math.random() - 0.5) * 4;
+                particles.push(new Particle(event.x, event.y, size, speedX, speedY));
+            }
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].update();
+                particles[i].draw();
+                if (particles[i].size <= 0.2) {
+                    particles.splice(i, 1);
+                    i--;
+                }
+            }
+            requestAnimationFrame(animateParticles);
+        }
+
+        window.addEventListener("mousemove", createParticles);
+        animateParticles();
+    </script>
+</body>
+</html>
